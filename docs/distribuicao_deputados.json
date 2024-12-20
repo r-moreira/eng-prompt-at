@@ -1,0 +1,27 @@
+
+{
+  "insights": [
+    {
+      "description": "The party with the most representatives is PL, with 93 representatives."
+    },
+    {
+      "description": "The party with the least representatives is REDE and S.PART., each with only 1 representative."
+    },
+    {
+      "description": "The party with the highest percentage of representation is PL, with 18.13%."
+    },
+    {
+      "description": "The parties with the lowest percentage of representation are REDE and S.PART., each with only 0.19%."
+    },
+    {
+      "description": "The distribution of representatives is highly skewed, with a few parties holding a significant majority of the seats.  This indicates a potential concentration of political power within a smaller number of parties."
+    },
+    {
+      "description": "Several parties have a relatively small number of representatives (less than 10), suggesting a fragmented political landscape beyond the dominant parties."
+    },
+    {
+      "description": "The top three parties (PL, UNIÃO, and PT) control over 40% of the total representation, highlighting their significant influence in the Brazilian political system."
+    }
+  ]
+}
+

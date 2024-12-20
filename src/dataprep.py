@@ -77,6 +77,25 @@ def insights_dist_deputados() -> None:
         You are an expert in generating insights about Brazilian politics. 
     """
     
+    insights_example = """
+          {
+            "insights": [
+                {
+                    "description": "The party with the most deputados is MDB with 20 deputados"
+                },
+                {
+                    "description": "The party with the least deputados is PL with 10 deputados"
+                },
+                {
+                    "description": "The party with the highest percentage of deputados is MDB with 20%"
+                },
+                {
+                    "description": "The party with the lowest percentage of deputados is PL with 10%"
+                }
+            ]
+        }
+    """
+    
     prompt = f"""
         You need to generate insights about the distribution of 'siglaPartido' in the dataframe 'partidos_df' that has the following columns:
         
@@ -88,22 +107,7 @@ def insights_dist_deputados() -> None:
         The insights should be in .json() format, your response must contain only json data.
         
         Example of insights:
-        {
-            "insights": [
-                    {
-                        "description": "The party with the most deputados is MDB with 20 deputados"
-                    },
-                    {
-                        "description": "The party with the least deputados is PL with 10 deputados"
-                    },
-                    {
-                        "description": "The party with the highest percentage of deputados is MDB with 20%"
-                    },
-                    {
-                        "description": "The party with the lowest percentage of deputados is PL with 10%"
-                    }
-                ]
-            }
+        {insights_example}
         
         Here is the dataframe:
         {partidos_df}
@@ -112,6 +116,8 @@ def insights_dist_deputados() -> None:
     model = Gemini(system_prompt=sys_prompt)
 
     json = model.generate(prompt).replace('```json', '').replace('```', '')
+    
+    print("Generated insights:\n", json)
     
     with open('docs/distribuicao_deputados.json', 'w') as f:
         f.write(json)
