@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 import json
 from llm.gemini import Gemini
+from utils.chunk_summary import ChunkSummary
 from dotenv import load_dotenv
 import argparse
 from tqdm import tqdm
@@ -187,6 +188,42 @@ def fetch_propositions(data_inicio="2024-08-01", data_fim="2024-08-30", cod_tema
 
     df_proposicoes = pd.DataFrame().from_dict(json.loads(response.text)['dados'])
     df_proposicoes.head(10).to_parquet('data/proposicoes_deputados.parquet')
+    
+def propositions_summarizer():
+    system_prompt = """
+    You are an expert in the Chamber of Deputies in Brazil.
+    You will receive chunk of propositions from the Chamber of Deputies in Brazil.
+
+    You must create a summary of the propositions, pointing out the most
+    relevant information in each chunk.
+    
+    The output should be in JSON format, like this:     
+        {
+            "summary": "The summary of the propositions"
+        }
+    """
+
+    generation_config = {
+        'temperature': 0.2,
+        'max_output_tokens': 200
+    }
+    
+    df_proposicoes = pd.read_parquet('data/proposicoes_deputados.parquet')
+
+    summarizer = ChunkSummary(    
+        text = df_proposicoes['ementa'].tolist(),
+        window_size = 5,
+        overlap_size = 3,
+        system_prompt=system_prompt,
+        generation_config=generation_config,
+    )
+
+    summary, _ = summarizer.summarize()
+    
+    print(summary)
+    
+    with open('docs/sumarizacao_proposicoes.json', 'w') as f:
+        f.write(summary.replace('```json', '').replace('```', ''))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='CLI to execute functions.')
@@ -195,7 +232,7 @@ if __name__ == '__main__':
     parser.add_argument('--insights', action='store_true', help='Generate insights dist deputados')
     parser.add_argument('--fetch_expenses', action='store_true', help='Fetch deputados expenses')
     parser.add_argument('--fetch_propositions', action='store_true', help='Fetch propositions')
-
+    parser.add_argument('--summarize_propositions', action='store_true', help='Summarize propositions')
 
     args = parser.parse_args()
 
@@ -209,3 +246,5 @@ if __name__ == '__main__':
         fetch_deputados_expenses()
     if args.fetch_propositions:
         fetch_propositions()
+    if args.summarize_propositions:
+        propositions_summarizer()
