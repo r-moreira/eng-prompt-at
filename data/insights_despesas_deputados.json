@@ -1,0 +1,42 @@
+{
+    "biggest_expense": {
+      "expense_type": "LOCAÇÃO OU FRETAMENTO DE AERONAVES",
+      "document_date": "2024-09-04",
+      "document_value": 85000.0,
+      "supplier_name": "R L FERREIRA - SERVIÇOS E AGENCIAMENTO LTDA",
+      "deputy_name": "Antônio Doido",
+      "party": "MDB"
+    },
+    "lowest_expense": {
+      "expense_type": "PASSAGEM AÉREA - SIGEPA",
+      "document_date": "2024-08-09",
+      "document_value": -3113.17,
+      "supplier_name": "TAM",
+      "deputy_name": "Julio Lopes",
+      "party": "PP"
+    },
+    "most_frequent_expense": {
+      "expense_type": "COMBUSTÍVEIS E LUBRIFICANTES",
+      "description": "This expense type occurs most frequently, suggesting recurring costs related to fuel or lubricants for official activities."
+    },
+    "expense_summary": {
+      "highest_expense": {
+        "deputy": "Antônio Doido",
+        "party": "MDB",
+        "amount": 85000.0,
+        "supplier": "R L FERREIRA - SERVIÇOS E AGENCIAMENTO LTDA"
+      },
+      "lowest_expense": {
+        "deputy": "Julio Lopes",
+        "party": "PP",
+        "amount": -3113.17,
+        "supplier": "TAM"
+      }
+    },
+    "insights": [
+      "The highest recorded expense is for aircraft rental or chartering, with a significant amount of R$85,000.00.",
+      "The lowest expense involves an airline ticket with a refund or negative amount of R$3,113.17, possibly a cancellation or adjustment.",
+      "The most frequent expense type is for fuel and lubricants, indicating consistent transportation-related costs."
+    ]
+  }
+  

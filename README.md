@@ -19,9 +19,11 @@ Aplicação que visa resolver os exercícios propostos na atividade de Engenhari
 
 ```./requirements.txt``` - Contém as dependências do projeto.
 
-```./data```- Contém os arquivos gerados pelos exercícios
+```./data```- Contém os arquivos gerados pelos exercícios.
 
-```./docs```- Contém os arquivos gerados pelos exercícios
+```./docs```- Contém os arquivos gerados pelos exercícios.
+
+```./images```- Contém os prints de prompts de alguns exercícios.
 
 
 ### Como rodar o projeto:
