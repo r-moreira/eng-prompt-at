@@ -126,7 +126,7 @@ def insights_dist_deputados() -> None:
     
     print("Generated insights:\n", json)
     
-    with open('docs/distribuicao_deputados.json', 'w') as f:
+    with open('data/insights_distribuicao_deputados.json', 'w') as f:
         f.write(json)
 
 def fetch_deputados_expenses(id_legislatura='57', ano_despesa='2024', mes_despesa='8', max_itens='100'):
