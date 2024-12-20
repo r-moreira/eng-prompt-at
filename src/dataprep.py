@@ -15,7 +15,12 @@ def fetch_and_save_deputados_data() -> None:
         Exercício 3 a): 
     """
     
-    response = requests.get(f'{CAMARA_BASE_URL}/deputados')
+    params = {
+        'dataInicio': "2024-08-01", 
+        'dataFim': "2024-08-30",
+    }
+    
+    response = requests.get(f'{CAMARA_BASE_URL}/deputados', params=params)
     
     if not response.ok:
         raise Exception('Nao foi possivel recuperar os dados')
@@ -124,6 +129,10 @@ def insights_dist_deputados() -> None:
         f.write(json)
 
 def fetch_deputados_expenses(id_legislatura='57', ano_despesa='2024', mes_despesa='8', max_itens='100'):
+    """
+        Exercício 4 a)
+    """
+    
     list_expenses = []
     df_deputados = pd.read_parquet('data/deputados.parquet')
 
@@ -158,17 +167,39 @@ def fetch_deputados_expenses(id_legislatura='57', ano_despesa='2024', mes_despes
         'nome',
         'siglaPartido'
     ]].to_parquet('data/serie_despesas_diárias_deputados.parquet')
+    
+def fetch_propositions(data_inicio="2024-08-01", data_fim="2024-08-30", cod_tema="40,46,62"):
+    """
+        Exercício 5 a)
+    """
+    
+    url = f'{CAMARA_BASE_URL}/proposicoes'
+    params = {
+                'dataInicio': data_inicio, 
+                'dataFim': data_fim,
+                'codTema': cod_tema
+            }
+
+    response = requests.get(url, params=params)
+    
+    if not response.ok:
+        raise Exception('Nao foi possivel recuperar os dados')
+
+    df_proposicoes = pd.DataFrame().from_dict(json.loads(response.text)['dados'])
+    df_proposicoes.head(10).to_parquet('data/proposicoes_deputados.parquet')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='CLI to execute functions.')
-    parser.add_argument('--fetch', action='store_true', help='Fetch and save deputados data')
+    parser.add_argument('--fetch_deputies', action='store_true', help='Fetch and save deputados data')
     parser.add_argument('--plot', action='store_true', help='Generate partidos pizza plot')
     parser.add_argument('--insights', action='store_true', help='Generate insights dist deputados')
     parser.add_argument('--fetch_expenses', action='store_true', help='Fetch deputados expenses')
+    parser.add_argument('--fetch_propositions', action='store_true', help='Fetch propositions')
+
 
     args = parser.parse_args()
 
-    if args.fetch:
+    if args.fetch_deputies:
         fetch_and_save_deputados_data()
     if args.plot:
         generated_partidos_pizza_plot()
@@ -176,3 +207,5 @@ if __name__ == '__main__':
         insights_dist_deputados()
     if args.fetch_expenses:
         fetch_deputados_expenses()
+    if args.fetch_propositions:
+        fetch_propositions()
