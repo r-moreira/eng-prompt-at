@@ -6,3 +6,4 @@ fastparquet
 requests
 python-dotenv
 google-generativeai
+pyyaml
