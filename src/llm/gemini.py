@@ -44,3 +44,9 @@ class Gemini:
     
     def generate(self, prompt):
         return self._model.generate_content(prompt).text
+    
+    def genarate_with_self_ask_questions(self, prompt):
+        
+        
+        
+        return self._model.generate_content(prompt).text

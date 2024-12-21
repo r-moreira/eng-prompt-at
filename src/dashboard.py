@@ -3,6 +3,53 @@ import yaml
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
+from llm.gemini import Gemini
+
+SELF_ASK_SYS_PROMPT = """
+    You are an expert in generating insights about Brazilian politics,
+    and you need to help the user to understand the data about the Chamber of Deputies.
+    
+    You will be asked, and before you generate the insights, you will be given three questions and answers related to the data.
+    
+    Based on the quetions and answers, you will generate the insights, considering the user input.
+"""  
+
+INTERMEDIATE_SYS_PROMPT = """
+    You are an expert in generating insights about Brazilian politics,
+    and you need to help the user to understand the data about the Chamber of Deputies.
+    
+    Your role is to generate insights about the data, creating three questions and answers related to the user question.
+"""
+
+SELF_ASK_MODEL = Gemini(system_prompt=SELF_ASK_SYS_PROMPT)
+INTERMEDIATE_MODEL = Gemini(system_prompt=INTERMEDIATE_SYS_PROMPT)
+
+if "messages" not in st.session_state:
+    st.session_state["messages"] = [{"role": "assistant", "content": "Olá, como posso te ajudar?"}]
+
+@st.cache_data(show_spinner=False)
+def on_chat_submit(user_message: str) -> None:
+    st.session_state.messages.append({"role": "user", "content": user_message})
+    
+    st.chat_message("user").write(user_message)
+    
+    intermediate_response: str = INTERMEDIATE_MODEL.generate(user_message) 
+    
+    print(intermediate_response)
+    
+    self_ask_prompt = f"""
+        Here are three questions and answers related to the user question:
+        {intermediate_response}
+    
+        Based on the questions and answers, please generate insights about the data considering the user input:    
+        {user_message}
+    """
+    
+    final_response: str = SELF_ASK_MODEL.generate(self_ask_prompt)
+    
+    st.session_state.messages.append({"role": "assistant", "content": final_response})
+    
+    st.chat_message("assistant").write(final_response)
 
 # Create tabs
 tabs = st.tabs(["Overview", "Despesas", "Proposições"])
@@ -59,3 +106,15 @@ with tabs[2]:
     with open("docs/sumarizacao_proposicoes.json", "r") as json_file:
         proposicoes_json_content = json.load(json_file)
     st.write("JSON Content:", proposicoes_json_content)
+
+st.divider()
+    
+st.button("Clear chat", on_click=lambda: st.session_state.pop("messages", None))
+
+st.header("💬 Chatbot")
+
+for message in st.session_state.messages:
+    st.chat_message(message["role"]).write(message["content"])
+
+if prompt := st.chat_input():
+    on_chat_submit(prompt)
