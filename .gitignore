@@ -3,3 +3,5 @@
 .venv
 __pycache__
 data/proposicoes_deputados.csv
+data/combined_texts.txt 
+data/faiss_index.bin

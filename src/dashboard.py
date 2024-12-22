@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import matplotlib.pyplot as plt
 from llm.gemini import Gemini
+from utils.vector_storage import search_vector_storage
 
 SELF_ASK_SYS_PROMPT = """
     You are an expert in generating insights about Brazilian politics,
@@ -11,7 +12,9 @@ SELF_ASK_SYS_PROMPT = """
     
     You will be asked, and before you generate the insights, you will be given three questions and answers related to the data.
     
-    Based on the quetions and answers, you will generate the insights, considering the user input.
+    Also you will be given database information with relevant data.
+    
+    Based on the quetions and answers and database information, you will generate the insights, considering the user input.
 """  
 
 INTERMEDIATE_SYS_PROMPT = """
@@ -37,9 +40,14 @@ def on_chat_submit(user_message: str) -> None:
     
     print(intermediate_response)
     
+    db_response = search_vector_storage(user_message)
+    
     self_ask_prompt = f"""
         Here are three questions and answers related to the user question:
         {intermediate_response}
+        
+        Here is the database information with relevant data:
+        {db_response}
     
         Based on the questions and answers, please generate insights about the data considering the user input:    
         {user_message}

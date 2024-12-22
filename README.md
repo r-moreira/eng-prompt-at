@@ -9,6 +9,7 @@
 ### Sobre o projeto:
 Aplicação que visa resolver os exercícios propostos na atividade de Engenharia de Prompts para Ciência de Dados.
 
+Obs: Não subi para o git o índice do Faiss pois o arquivo ficou muito grande.
 
 ### Estrutura do projeto:
 ```README.md``` - Este arquivo.

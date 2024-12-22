@@ -3,6 +3,7 @@ import pandas as pd
 import json
 from llm.gemini import Gemini
 from utils.chunk_summary import ChunkSummary
+from utils.vector_storage import dataframe_to_text_list, write_texts_to_file, create_faiss_index, search_vector_storage
 from dotenv import load_dotenv
 import argparse
 from tqdm import tqdm
@@ -225,6 +226,30 @@ def propositions_summarizer():
     with open('docs/sumarizacao_proposicoes.json', 'w') as f:
         f.write(summary.replace('```json', '').replace('```', ''))
 
+def generate_vector_storage():
+    """
+        Exercício 8
+    """
+    
+    try:
+        df_parquet = pd.read_parquet('data/deputados.parquet')
+        df_expenses = pd.read_parquet('data/serie_despesas_diárias_deputados.parquet')
+        df_proposicoes = pd.read_parquet('data/proposicoes_deputados.parquet')
+        
+        texts = (
+            dataframe_to_text_list(df_parquet) 
+            + dataframe_to_text_list(df_expenses)
+            + dataframe_to_text_list(df_proposicoes)
+        )
+    
+        write_texts_to_file(texts, 'data/combined_texts.txt')
+        create_faiss_index(texts, 'neuralmind/bert-base-portuguese-cased', 'data/faiss_index.bin')
+        
+        print('Vector storage generated successfully')
+    except Exception as e:
+        print(f'Error generating vector storage: {e}')
+    
+    
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='CLI to execute functions.')
     parser.add_argument('--fetch_deputies', action='store_true', help='Fetch and save deputados data')
@@ -233,6 +258,8 @@ if __name__ == '__main__':
     parser.add_argument('--fetch_expenses', action='store_true', help='Fetch deputados expenses')
     parser.add_argument('--fetch_propositions', action='store_true', help='Fetch propositions')
     parser.add_argument('--summarize_propositions', action='store_true', help='Summarize propositions')
+    parser.add_argument('--generate_vector_storage', action='store_true', help='Generate vector storage')
+    parser.add_argument('--search_vector_storage', action='store_true', help='Search vector storage')
 
     args = parser.parse_args()
 
@@ -248,3 +275,9 @@ if __name__ == '__main__':
         fetch_propositions()
     if args.summarize_propositions:
         propositions_summarizer()
+    if args.generate_vector_storage:
+        generate_vector_storage()
+    if args.search_vector_storage:
+        # apenas para teste
+        results = search_vector_storage('educação')
+        print(results)
