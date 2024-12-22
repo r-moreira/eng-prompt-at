@@ -14,9 +14,11 @@ Obs: Não subi para o git o índice do Faiss pois o arquivo ficou muito grande.
 ### Estrutura do projeto:
 ```README.md``` - Este arquivo.
 
-```rodrigo_avila_DR4_AT.ipynb```- Contém a resolução dos exercícios 1 a 9 a).
+```rodrigo_avila_DR4_AT.ipynb``` - Contém a resolução dos exercícios 1 a 9 a).
 
-```rodrigo_avila_DR4_AT_geracao_imagens.ipynb```- Contém a resolução do exercício 9 b).
+```rodrigo_avila_DR4_AT_geracao_imagens.ipynb``` - Contém a resolução do exercício 9 b).
+
+```rodrigo_avila_DR4_AT_aquitetura.pdf``` - Contém o desenho de arquitetura para o exercício 1 a) 
 
 ```./src/*``` - Contém o código fonte da aplicação com a resolução de todos os exercícios.
 
