@@ -15,6 +15,8 @@ SELF_ASK_SYS_PROMPT = """
     Also you will be given database information with relevant data.
     
     Based on the quetions and answers and database information, you will generate the insights, considering the user input.
+    
+    Responda em português.
 """  
 
 INTERMEDIATE_SYS_PROMPT = """
