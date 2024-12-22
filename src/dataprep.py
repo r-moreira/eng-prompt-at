@@ -226,20 +226,57 @@ def propositions_summarizer():
     with open('docs/sumarizacao_proposicoes.json', 'w') as f:
         f.write(summary.replace('```json', '').replace('```', ''))
 
+
 def generate_vector_storage():
     """
         Exercício 8
     """
-    
+
+    def insights_despesas_to_text_list(json_data):
+        """
+            Transforma o json de insights de despesas em uma lista de strings para ser salvo na base de dados vetorizada
+        """
+        text_list = []
+
+        biggest_expense = json_data['biggest_expense']
+        text_list.append(f"Biggest Expense: {biggest_expense['expense_type']} on {biggest_expense['document_date']} with value {biggest_expense['document_value']} by {biggest_expense['supplier_name']} for deputy {biggest_expense['deputy_name']} from party {biggest_expense['party']}.")
+
+        lowest_expense = json_data['lowest_expense']
+        text_list.append(f"Lowest Expense: {lowest_expense['expense_type']} on {lowest_expense['document_date']} with value {lowest_expense['document_value']} by {lowest_expense['supplier_name']} for deputy {lowest_expense['deputy_name']} from party {lowest_expense['party']}.")
+
+        most_frequent_expense = json_data['most_frequent_expense']
+        text_list.append(f"Most Frequent Expense: {most_frequent_expense['expense_type']} - {most_frequent_expense['description']}")
+
+        highest_expense_summary = json_data['expense_summary']['highest_expense']
+        text_list.append(f"Expense Summary - Highest Expense: Deputy {highest_expense_summary['deputy']} from party {highest_expense_summary['party']} with amount {highest_expense_summary['amount']} by {highest_expense_summary['supplier']}.")
+
+        lowest_expense_summary = json_data['expense_summary']['lowest_expense']
+        text_list.append(f"Expense Summary - Lowest Expense: Deputy {lowest_expense_summary['deputy']} from party {lowest_expense_summary['party']} with amount {lowest_expense_summary['amount']} by {lowest_expense_summary['supplier']}.")
+
+        insights = json_data['insights']
+        for insight in insights:
+            text_list.append(f"Insight: {insight}")
+
+        return text_list
+
     try:
         df_parquet = pd.read_parquet('data/deputados.parquet')
         df_expenses = pd.read_parquet('data/serie_despesas_diárias_deputados.parquet')
         df_proposicoes = pd.read_parquet('data/proposicoes_deputados.parquet')
-        
+        with open("data/insights_distribuicao_deputados.json", "r") as json_file:
+            insights_dist_deputados_json_content = json.load(json_file)
+        with open("data/insights_despesas_deputados.json", "r") as json_file:
+            despesas_json_content = json.load(json_file)
+        with open("docs/sumarizacao_proposicoes.json", "r") as json_file:
+            sumarizacao_proposicoes_json_content = json.load(json_file)
+            
         texts = (
             dataframe_to_text_list(df_parquet) 
             + dataframe_to_text_list(df_expenses)
             + dataframe_to_text_list(df_proposicoes)
+            + [x['description'] for x in insights_dist_deputados_json_content['insights']]
+            + insights_despesas_to_text_list(despesas_json_content)
+            + [sumarizacao_proposicoes_json_content['summary']]
         )
     
         write_texts_to_file(texts, 'data/combined_texts.txt')

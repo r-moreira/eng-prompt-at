@@ -36,7 +36,7 @@ def create_faiss_index(texts, model_name, index_file_path, cache_folder="../data
     
     faiss.write_index(index, index_file_path)
     
-def search_vector_storage(query, top_k=10):
+def search_vector_storage(query, top_k=15):
     """
         Apenas para teste
     """
